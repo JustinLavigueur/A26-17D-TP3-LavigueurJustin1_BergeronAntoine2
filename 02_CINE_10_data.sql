@@ -452,7 +452,7 @@ PROMPT ===================================================
 PROMPT Vérification des données insérées
 PROMPT ===================================================
 
-SELECT 'CINÉMAS' AS "Table", COUNT(*) AS "Nombre" FROM cine.cinemas
+SELECT 'CINÉMAS' AS nom_table, COUNT(*) AS "Nombre" FROM cine.cinemas
 UNION ALL
 SELECT 'GENRES', COUNT(*) FROM cine.genres
 UNION ALL
@@ -465,7 +465,7 @@ UNION ALL
 SELECT 'CLIENTS', COUNT(*) FROM cine.clients
 UNION ALL
 SELECT 'RESERVATIONS', COUNT(*) FROM cine.reservations
-ORDER BY "Table";
+ORDER BY 1;
 
 PROMPT ===================================================
 PROMPT Données insérées avec succès
