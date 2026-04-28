@@ -218,7 +218,8 @@ create table cine.reservations (
    nb_sieges        number not null,
    statut           varchar2(20)  not null, --4) e
    sieges_occupes   varchar2(255) not null,
-   prix_ticket      number(10,2) not null
+   prix_ticket      number(10,2) not null,
+    FRAIS_ANNULATION NUMBER(8,2) DEFAULT 0
 );comment on table cine.reservations is
    'Table des réservations de cinéma avec les détails de la réservation.';
 comment on column cine.reservations.sieges_occupes is
