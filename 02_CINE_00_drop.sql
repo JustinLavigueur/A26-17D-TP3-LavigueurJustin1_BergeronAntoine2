@@ -11,4 +11,5 @@ DROP TABLE cine.seances CASCADE CONSTRAINTS;
 DROP TABLE cine.clients CASCADE CONSTRAINTS;
 DROP TABLE cine.reservations CASCADE CONSTRAINTS;
 
-DROP SEQUENCE cine.clients_seq;
+DROP SEQUENCE cine.seq_clients;
+DROP VIEW cine.dictionnaire_v;
