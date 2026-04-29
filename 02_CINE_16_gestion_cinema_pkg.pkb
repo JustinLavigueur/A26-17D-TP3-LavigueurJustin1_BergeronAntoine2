@@ -57,7 +57,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
     END annuler_reservation_prc;
 
 
-    -- Fonction qui vérifie si une séance a assez de places disponibles
+    -- Fonction qui vérifie si une séance a assez de places disponibles (MEMBRE 1)
     FUNCTION verifier_disponibilite_fct(
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
@@ -98,6 +98,32 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             RETURN FALSE;
 
     END verifier_disponibilite_fct;
+
+
+    -- Procédure generer_rapport_occupation_prc (MEMBRE 1)
+    PROCEDURE generer_rapport_occupation_prc(
+    i_annee IN NUMBER
+    ) IS
+        CURSOR c_occupation IS
+            SELECT s.id AS salle_id,
+                COUNT(r.id) AS nb_reservations
+            FROM cine.salles s
+            LEFT JOIN cine.seances se ON se.salle_id = s.id
+            LEFT JOIN cine.reservations r ON r.seance_id = se.id
+            WHERE EXTRACT(YEAR FROM se.date_heure) = i_annee
+            GROUP BY s.id;
+    BEGIN
+        FOR rec IN c_occupation LOOP
+            DBMS_OUTPUT.PUT_LINE(
+                'Salle ' || rec.salle_id ||
+                ' : ' || rec.nb_reservations || ' réservations'
+            );
+        END LOOP;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erreur dans le rapport');
+    END generer_rapport_occupation_prc;
 
 END gestion_cinema_pkg;
 /

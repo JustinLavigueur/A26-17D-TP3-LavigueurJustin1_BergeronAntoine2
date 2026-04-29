@@ -19,5 +19,10 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
         o_date_prochaine_seance OUT DATE
     ) RETURN BOOLEAN;
 
+    -- La procedure generer_rapport_occupation_prc permet de générer via DBMS_OUTPUT un rapport d'occupation par salle pour une année donnée
+    PROCEDURE generer_rapport_occupation_prc(
+    i_annee IN NUMBER
+);
+
 END gestion_cinema_pkg;
 /
