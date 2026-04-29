@@ -56,12 +56,8 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             RAISE;
     END annuler_reservation_prc;
 
-END GESTION_CINEMA_PKG;
 
-
-
-CREATE OR REPLACE PACKAGE BODY cine.gestion_cinema_pkg AS
-
+    -- Fonction qui vérifie si une séance a assez de places disponibles
     FUNCTION verifier_disponibilite_fct(
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
