@@ -3,7 +3,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     -- Procédure d'annulation de réservation (MEMBRE 2)
     PROCEDURE annuler_reservation_prc(
-        p_id_reservation IN cine.reservations.id%TYPE
+        i_reservation_id IN cine.reservations.id%TYPE
     ) IS
         v_date_seance      cine.seances.date_heure%TYPE;
         v_prix_ticket      cine.reservations.prix_ticket%TYPE;
@@ -20,13 +20,13 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
                  v_nb_sieges
             FROM cine.reservations r
             JOIN cine.seances s ON r.seance_id = s.id
-            WHERE r.id = p_id_reservation;
+            WHERE r.id = i_reservation_id;
         EXCEPTION
             WHEN NO_DATA_FOUND THEN
                 RAISE e_client_inexistant;
         END;
 
-        v_heures_restantes := (CAST(v_date_seance AS DATE) - CAST(SYSTIMESTAMP AS DATE)) * 24;
+        v_heures_restantes := (CAST(v_date_seance AS DATE) - SYSDATE) * 24;
 
         IF v_heures_restantes < 24 THEN
             v_frais := ROUND(v_nb_sieges * v_prix_ticket * 0.2, 2);
@@ -34,7 +34,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             UPDATE cine.reservations
             SET statut           = 'ANNULÉE',
                 frais_annulation = v_frais
-            WHERE id = p_id_reservation;
+            WHERE id = i_reservation_id;
 
             COMMIT;
             RAISE e_annulation_tardive;
@@ -43,7 +43,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         UPDATE cine.reservations
         SET statut           = 'ANNULÉE',
             frais_annulation = 0
-        WHERE id = p_id_reservation;
+        WHERE id = i_reservation_id;
 
         COMMIT;
 

@@ -24,7 +24,7 @@ DECLARE
     d_prochaine   DATE;
 BEGIN
     b_dispo := cine.gestion_cinema_pkg.verifier_disponibilite_fct(
-        i_seance_id      => [ID_SEANCE_AVEC_PLACES],   
+        i_seance_id      => 10,
         i_nb_sieges      => 2,
         o_date_prochaine => d_prochaine
     );
@@ -46,14 +46,14 @@ END;
 -- TEST 2 — verifier_disponibilite_fct : séance complète
 -- Attendu : e_seance_complete levée, o_date_prochaine renseignée (ou NULL si aucune)
 -- ============================================================================
--- Trouvez l'ID d'une séance dont toutes les places sont prises et utiliser cette valeur pour ce test 
+-- Trouvez l'ID d'une séance dont toutes les places sont prises et utiliser cette valeur pour ce test
 
 DECLARE
     b_dispo     BOOLEAN;
     d_prochaine DATE;
 BEGIN
     b_dispo := cine.gestion_cinema_pkg.verifier_disponibilite_fct(
-        i_seance_id      => [ID_SEANCE_COMPLETE], 
+        i_seance_id      => [ID_SEANCE_COMPLETE],
         i_nb_sieges      => 1,
         o_date_prochaine => d_prochaine
     );
@@ -81,10 +81,10 @@ END;
 DECLARE
 BEGIN
     cine.gestion_cinema_pkg.annuler_reservation_prc(
-        i_reservation_id => [ID_RESERVATION_FUTURE]   
+        i_reservation_id => 401
     );
     -- Vérifier le résultat :
-    FOR r IN (SELECT statut, frais_annulation FROM cine.reservations WHERE id = [ID_RESERVATION_FUTURE]) LOOP
+    FOR r IN (SELECT statut, frais_annulation FROM cine.reservations WHERE id = 401) LOOP
         DBMS_OUTPUT.PUT_LINE('TEST 3 — Statut : ' || r.statut || ' | Frais : ' || r.frais_annulation);
         IF r.statut = 'ANNULÉE' AND r.frais_annulation = 0 THEN
             DBMS_OUTPUT.PUT_LINE('TEST 3 RÉUSSI.');
@@ -111,9 +111,9 @@ END;
 DECLARE
 BEGIN
     cine.gestion_cinema_pkg.annuler_reservation_prc(
-        i_reservation_id => [ID_RESERVATION_DANS_24H]
+        i_reservation_id => 401
     );
-    FOR r IN (SELECT statut, frais_annulation, montant_calcule FROM cine.reservations WHERE id = [ID_RESERVATION_DANS_24H]) LOOP
+    FOR r IN (SELECT statut, frais_annulation, montant_calcule FROM cine.reservations WHERE id = 401) LOOP
         DBMS_OUTPUT.PUT_LINE('TEST 4 — Statut : ' || r.statut || ' | Frais : ' || r.frais_annulation);
         IF r.statut = 'ANNULÉE' AND r.frais_annulation > 0 THEN
             DBMS_OUTPUT.PUT_LINE('TEST 4 RÉUSSI. Frais attendus : ' || ROUND(r.montant_calcule * 0.20, 2));
@@ -141,7 +141,7 @@ DECLARE
     n_mois NUMBER;
 BEGIN
     n_mois := cine.gestion_cinema_pkg.archiver_seances_annee_fct(
-        i_annee => '[ANNEE]'  
+        i_annee => '[ANNEE]'
     );
     DBMS_OUTPUT.PUT_LINE('TEST 5 — Mois archivés : ' || n_mois);
     IF n_mois > 0 THEN
@@ -163,7 +163,7 @@ DECLARE
     n_salles NUMBER;
 BEGIN
     cine.gestion_cinema_pkg.generer_rapport_occupation_prc(
-        i_annee     => '[ANNEE]',  
+        i_annee     => '[ANNEE]',
         o_nb_salles => n_salles
     );
     DBMS_OUTPUT.PUT_LINE('TEST 6 — Salles traitées : ' || n_salles);
@@ -180,17 +180,17 @@ END;
 -- TEST 7 — Déclencheur A : réservations_capacite_trg
 -- Attendu : ORA-20002 si on dépasse la capacité
 -- ============================================================================
--- Trouvez une séance presque pleine (1 siège libre), l'ID d'un client valide, 
+-- Trouvez une séance presque pleine (1 siège libre), l'ID d'un client valide,
 -- et un nombre de sieges à reserver plus grand que le restant.
 
 BEGIN
     -- Tentative d'insertion dépassant la capacité :
     INSERT INTO cine.reservations (seance_id, client_id, date_reservation, nb_sieges, statut)
     VALUES (
-        [ID_SEANCE_PRESQUE_PLEINE],   
-        [ID_CLIENT_VALIDE],            
+        [ID_SEANCE_PRESQUE_PLEINE],
+        [ID_CLIENT_VALIDE],
         SYSDATE,
-        [NB_SIEGES_SUPERIEUR_RESTANTS], 
+        [NB_SIEGES_SUPERIEUR_RESTANTS],
         'CONFIRMÉE'
     );
     DBMS_OUTPUT.PUT_LINE('TEST 7 ÉCHOUÉ : Le trigger n''a pas bloqué l''insertion.');
@@ -214,7 +214,7 @@ END;
 -- Trouvez un client ayant une réservation CONFIRMÉE dans le futur :
 
 BEGIN
-    DELETE FROM cine.clients WHERE id = [ID_CLIENT_AVEC_RESERVATION_FUTURE];  
+    DELETE FROM cine.clients WHERE id = [ID_CLIENT_AVEC_RESERVATION_FUTURE];
     DBMS_OUTPUT.PUT_LINE('TEST 8A ÉCHOUÉ : Le trigger n''a pas bloqué la suppression.');
     ROLLBACK;
 EXCEPTION
@@ -239,9 +239,9 @@ DECLARE
     n_reservations NUMBER;
 BEGIN
     SELECT COUNT(1) INTO n_reservations
-    FROM cine.reservations WHERE client_id = [ID_CLIENT_SANS_RESERVATION_FUTURE]; 
+    FROM cine.reservations WHERE client_id = [ID_CLIENT_SANS_RESERVATION_FUTURE];
 
-    DELETE FROM cine.clients WHERE id = [ID_CLIENT_SANS_RESERVATION_FUTURE]; 
+    DELETE FROM cine.clients WHERE id = [ID_CLIENT_SANS_RESERVATION_FUTURE];
 
     DBMS_OUTPUT.PUT_LINE('TEST 8B — Client supprimé. Réservations en cascade : ' || n_reservations);
     DBMS_OUTPUT.PUT_LINE('TEST 8B RÉUSSI.');

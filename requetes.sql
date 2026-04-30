@@ -8,6 +8,8 @@ LEFT JOIN cine.FILMS F ON F.GENRE_ID = G.ID
 GROUP BY G.NOM
 ORDER BY PART_POURCENTAGE DESC;
 
+
+
 -- 2) Afficher le taux d'occupation par salle. Pour chaque salle, afficher le Cinéma (nom), Numéro de salle,
 -- Nombre de sièges, Nombre de sièges réservés et Taux d'occupation (%). Trier par cinéma et numéro
 -- de salle.
