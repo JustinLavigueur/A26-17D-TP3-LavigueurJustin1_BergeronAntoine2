@@ -7,6 +7,8 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
     -- Exception levée quand la séance n'a pas assez de places disponibles
     e_seance_complete EXCEPTION;
 
+
+
     PROCEDURE annuler_reservation_prc(
         p_id_reservation IN cine.reservations.id%TYPE
     );
@@ -27,6 +29,10 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
         i_annee IN NUMBER DEFAULT g_annee_courante,
         o_nb_salles_traitees OUT NUMBER
     );
+
+    FUNCTION archiver_seances_annee_fct(
+        p_annee IN NUMBER DEFAULT g_annee_courante
+    ) RETURN NUMBER;
 
 END gestion_cinema_pkg;
 /

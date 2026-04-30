@@ -122,6 +122,12 @@ alter table cine.seances
 ALTER TABLE cine.seances
 MODIFY prix_ticket DEFAULT 12.99;
 
+--TP3) ajout d'une colonne pour l'archivage de séances dans la fonction archiver_seances_annee_fct.
+ALTER TABLE cine.seances
+ADD statut VARCHAR2(20) DEFAULT 'ACTIVE' NOT NULL;
+
+COMMIT;
+
 commit;
 
 
