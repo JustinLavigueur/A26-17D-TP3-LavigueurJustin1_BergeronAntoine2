@@ -28,7 +28,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         v_heures_restantes := (CAST(v_date_seance AS DATE) - CAST(SYSTIMESTAMP AS DATE)) * 24;
 
         IF v_heures_restantes < 24 THEN
-            v_frais := ROUND(v_nb_sieges * v_prix_ticket * 0.5, 2);
+            v_frais := ROUND(v_nb_sieges * v_prix_ticket * 0.2, 2);
 
             UPDATE cine.reservations
             SET statut           = 'ANNULÉE',
@@ -48,12 +48,13 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     EXCEPTION
         WHEN e_client_inexistant THEN
-            RAISE;
+            Dbms_output.PUT_LINE('Client inexistant : ' || SQLERRM);
+
         WHEN e_annulation_tardive THEN
-            RAISE;
+            Dbms_output.PUT_LINE('Annulation tardive : ' || SQLERRM);
+
         WHEN OTHERS THEN
-            ROLLBACK;
-            RAISE;
+           Dbms_output.PUT_LINE('Erreur lors de l''annulation : ' || SQLERRM);
     END annuler_reservation_prc;
 
 
@@ -126,6 +127,56 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         WHEN OTHERS THEN
             DBMS_OUTPUT.PUT_LINE('Erreur dans le rapport');
     END generer_rapport_occupation_prc;
+
+
+    PROCEDURE archiver_mois_prc(
+        p_annee IN NUMBER,
+        p_mois  IN NUMBER
+    ) IS
+    BEGIN
+        UPDATE cine.seances
+        SET statut = 'ARCHIVÉE'
+        WHERE EXTRACT(YEAR FROM date_heure) = p_annee
+          AND EXTRACT(MONTH FROM date_heure) = p_mois;
+
+        COMMIT;
+    END archiver_mois_prc;
+
+
+    FUNCTION archiver_seances_annee_fct(
+        p_annee IN NUMBER DEFAULT g_annee_courante
+    ) RETURN NUMBER IS
+
+        CURSOR c_mois_eligibles(cp_annee IN NUMBER) IS
+            SELECT DISTINCT EXTRACT(MONTH FROM date_heure) AS mois
+            FROM cine.seances s
+            WHERE EXTRACT(YEAR FROM date_heure) = cp_annee
+              AND statut != 'ARCHIVÉE'
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM cine.reservations r
+                  WHERE r.seance_id = s.id
+                    AND r.statut = 'EN_ATTENTE'
+              )
+            ORDER BY mois;
+
+        v_nb_mois NUMBER := 0;
+
+    BEGIN
+        FOR rec IN c_mois_eligibles(p_annee) LOOP
+            archiver_mois_prc(p_annee, rec.mois);
+            v_nb_mois := v_nb_mois + 1;
+        END LOOP;
+
+        RETURN v_nb_mois;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+        Dbms_output.PUT_LINE('Erreur lors de l''archivage : ' || SQLERRM);
+
+    END archiver_seances_annee_fct;
+
+
 
 END gestion_cinema_pkg;
 /
