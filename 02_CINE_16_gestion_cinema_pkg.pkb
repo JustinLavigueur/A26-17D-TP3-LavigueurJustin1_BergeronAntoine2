@@ -102,7 +102,8 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     -- Procédure generer_rapport_occupation_prc (MEMBRE 1)
     PROCEDURE generer_rapport_occupation_prc(
-    i_annee IN NUMBER
+        i_annee IN NUMBER DEFAULT g_annee_courante,
+        o_nb_salles_traitees OUT NUMBER
     ) IS
         CURSOR c_occupation IS
             SELECT s.id AS salle_id,
@@ -113,11 +114,12 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             WHERE EXTRACT(YEAR FROM se.date_heure) = i_annee
             GROUP BY s.id;
     BEGIN
+
+        o_nb_salles_traitees := 0;
+
         FOR rec IN c_occupation LOOP
-            DBMS_OUTPUT.PUT_LINE(
-                'Salle ' || rec.salle_id ||
-                ' : ' || rec.nb_reservations || ' réservations'
-            );
+            o_nb_salles_traitees := o_nb_salles_traitees + 1;
+            DBMS_OUTPUT.PUT_LINE('Salle ' || rec.salle_id ||' : ' || rec.nb_reservations || ' réservations');
         END LOOP;
 
     EXCEPTION

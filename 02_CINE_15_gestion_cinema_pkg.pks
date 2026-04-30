@@ -12,17 +12,21 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
     );
 
     -- La fonction verifier_disponibilite_fct vérifie si une séance de cinéma a assez de places disponibles.
-    -- Retourne TRUE si oui et lève e_seance_complete si non.
+    -- Elle retourne TRUE si oui et lève l'exception e_seance_complete si non.
     FUNCTION verifier_disponibilite_fct(
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
         o_date_prochaine_seance OUT DATE
     ) RETURN BOOLEAN;
 
+    -- Variable globale
+    g_annee_courante CONSTANT NUMBER := EXTRACT(YEAR FROM SYSDATE);
+
     -- La procedure generer_rapport_occupation_prc permet de générer via DBMS_OUTPUT un rapport d'occupation par salle pour une année donnée
     PROCEDURE generer_rapport_occupation_prc(
-    i_annee IN NUMBER
-);
+        i_annee IN NUMBER DEFAULT g_annee_courante,
+        o_nb_salles_traitees OUT NUMBER
+    );
 
 END gestion_cinema_pkg;
 /
