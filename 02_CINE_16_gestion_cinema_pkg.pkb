@@ -90,7 +90,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     EXCEPTION
         WHEN e_seance_complete THEN
-            RAISE;
+            DBMS_OUTPUT.PUT_LINE('la séance n`a pas assez de places disponibles');
 
         WHEN NO_DATA_FOUND THEN
             RETURN FALSE;
