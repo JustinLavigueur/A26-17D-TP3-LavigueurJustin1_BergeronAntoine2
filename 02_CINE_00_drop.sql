@@ -14,3 +14,7 @@ DROP TABLE cine.seances CASCADE CONSTRAINTS;
 DROP TABLE cine.clients CASCADE CONSTRAINTS;
 DROP TABLE cine.reservations CASCADE CONSTRAINTS;
 
+-- Suppresion du package cine.GESTION_CINEMA_PKG et son body aussi 
+DROP PACKAGE BODY cine.gestion_cinema_pkg;
+DROP PACKAGE cine.gestion_cinema_pkg;
+
