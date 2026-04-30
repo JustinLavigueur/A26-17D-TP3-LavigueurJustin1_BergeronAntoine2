@@ -1,6 +1,7 @@
 --Procédure d'annulation de réservation
 CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
+    -- Procédure d'annulation de réservation (MEMBRE 2)
     PROCEDURE annuler_reservation_prc(
         p_id_reservation IN cine.reservations.id%TYPE
     ) IS
@@ -51,7 +52,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             Dbms_output.PUT_LINE('Client inexistant : ' || SQLERRM);
 
         WHEN e_annulation_tardive THEN
-            Dbms_output.PUT_LINE('Annulation tardive : ' || SQLERRM);
+            Dbms_output.PUT_LINE('Annulation tardive. La séance est dans 24h ou moins (Des frais d''annulation de 20% s''appliquent) : ' || SQLERRM);
 
         WHEN OTHERS THEN
            Dbms_output.PUT_LINE('Erreur lors de l''annulation : ' || SQLERRM);
@@ -128,7 +129,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             DBMS_OUTPUT.PUT_LINE('Erreur dans le rapport');
     END generer_rapport_occupation_prc;
 
-
+    -- Procédure d'archivage privée de séances pour un mois donnée (MEMBRE 2)
     PROCEDURE archiver_mois_prc(
         p_annee IN NUMBER,
         p_mois  IN NUMBER
@@ -142,7 +143,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         COMMIT;
     END archiver_mois_prc;
 
-
+    --fonction d'archivage de séances pour une année donnée (MEMBRE 2)
     FUNCTION archiver_seances_annee_fct(
         p_annee IN NUMBER DEFAULT g_annee_courante
     ) RETURN NUMBER IS
