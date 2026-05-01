@@ -78,13 +78,19 @@ END;
 -- ============================================================================
 -- Trouvez une réservation CONFIRMÉE dont la séance est dans > 24h
 
+--=============================================================================
+--*****************************************************************************
+--TEST RÉUSSI
+--*****************************************************************************
+--=============================================================================
+
 DECLARE
 BEGIN
     cine.gestion_cinema_pkg.annuler_reservation_prc(
-        i_reservation_id => 401
+        i_reservation_id => 360
     );
     -- Vérifier le résultat :
-    FOR r IN (SELECT statut, frais_annulation FROM cine.reservations WHERE id = 401) LOOP
+    FOR r IN (SELECT statut, frais_annulation FROM cine.reservations WHERE id = 360) LOOP
         DBMS_OUTPUT.PUT_LINE('TEST 3 — Statut : ' || r.statut || ' | Frais : ' || r.frais_annulation);
         IF r.statut = 'ANNULÉE' AND r.frais_annulation = 0 THEN
             DBMS_OUTPUT.PUT_LINE('TEST 3 RÉUSSI.');
@@ -108,12 +114,18 @@ END;
 -- ============================================================================
 -- Trouvez une réservation CONFIRMÉE dont la séance est dans < 24h :
 
+
+--==============================================================================
+--******************************************************************************
+--TESTE RÉUSSI
+--******************************************************************************
+--==============================================================================
 DECLARE
 BEGIN
     cine.gestion_cinema_pkg.annuler_reservation_prc(
-        i_reservation_id => 401
+        i_reservation_id => 89
     );
-    FOR r IN (SELECT statut, frais_annulation, montant_calcule FROM cine.reservations WHERE id = 401) LOOP
+    FOR r IN (SELECT statut, frais_annulation, montant_calcule FROM cine.reservations WHERE id = 89) LOOP
         DBMS_OUTPUT.PUT_LINE('TEST 4 — Statut : ' || r.statut || ' | Frais : ' || r.frais_annulation);
         IF r.statut = 'ANNULÉE' AND r.frais_annulation > 0 THEN
             DBMS_OUTPUT.PUT_LINE('TEST 4 RÉUSSI. Frais attendus : ' || ROUND(r.montant_calcule * 0.20, 2));
