@@ -24,7 +24,7 @@ DECLARE
     d_prochaine   DATE;
 BEGIN
     b_dispo := cine.gestion_cinema_pkg.verifier_disponibilite_fct(
-        i_seance_id      => 10,
+        i_seance_id      => 1,
         i_nb_sieges      => 2,
         o_date_prochaine => d_prochaine
     );
@@ -175,8 +175,8 @@ DECLARE
     n_salles NUMBER;
 BEGIN
     cine.gestion_cinema_pkg.generer_rapport_occupation_prc(
-        i_annee     => '[ANNEE]',
-        o_nb_salles => n_salles
+        i_annee     => EXTRACT(YEAR FROM SYSDATE),
+        o_nb_salles_traitees => n_salles
     );
     DBMS_OUTPUT.PUT_LINE('TEST 6 — Salles traitées : ' || n_salles);
     IF n_salles > 0 THEN
