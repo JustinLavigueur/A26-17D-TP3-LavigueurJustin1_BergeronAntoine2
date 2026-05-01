@@ -10,7 +10,7 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
 
 
     PROCEDURE annuler_reservation_prc(
-        p_id_reservation IN cine.reservations.id%TYPE
+        i_reservation_id IN cine.reservations.id%TYPE
     );
 
     -- La fonction verifier_disponibilite_fct vérifie si une séance de cinéma a assez de places disponibles.

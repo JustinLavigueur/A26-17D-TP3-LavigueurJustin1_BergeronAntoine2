@@ -433,6 +433,8 @@ BEGIN
         VALUES
             (v_seance_id, v_client_id, v_date_resa, v_nb_sieges, v_statut, v_sieges, v_prix);
     END LOOP;
+    INSERT INTO cine.reservations (seance_id, client_id, date_reservation, nb_sieges, statut, sieges_occupes, prix_ticket)
+    VALUES (1, v_client_ids(1), TO_DATE('2027-01-01', 'YYYY-MM-DD'),1, 'CONFIRMÉE', 'SIEGE_401,', 25.98);
 
     COMMIT;
 
