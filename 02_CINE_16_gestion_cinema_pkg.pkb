@@ -63,7 +63,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
     FUNCTION verifier_disponibilite_fct(
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
-        o_date_prochaine_seance OUT DATE
+        o_date_prochaine OUT DATE
     ) RETURN BOOLEAN AS
 
         v_places_disponibles NUMBER;
@@ -91,7 +91,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     EXCEPTION
         WHEN e_seance_complete THEN
-            DBMS_OUTPUT.PUT_LINE('la séance n`a pas assez de places disponibles');
+            RAISE;
 
         WHEN NO_DATA_FOUND THEN
             RETURN FALSE;

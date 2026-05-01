@@ -18,7 +18,7 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
     FUNCTION verifier_disponibilite_fct(
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
-        o_date_prochaine_seance OUT DATE
+        o_date_seance OUT DATE
     ) RETURN BOOLEAN;
 
     -- Variable globale
