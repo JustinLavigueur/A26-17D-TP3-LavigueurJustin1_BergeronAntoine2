@@ -36,7 +36,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
                 frais_annulation = v_frais
             WHERE id = i_reservation_id;
 
-            COMMIT;
+
             RAISE e_annulation_tardive;
         END IF;
 
@@ -44,8 +44,6 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         SET statut           = 'ANNULÉE',
             frais_annulation = 0
         WHERE id = i_reservation_id;
-
-        COMMIT;
 
     EXCEPTION
         WHEN e_client_inexistant THEN
@@ -82,7 +80,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         END IF;
 
         SELECT MIN(se2.date_heure)
-        INTO o_date_prochaine_seance FROM cine.seances se1
+        INTO o_date_prochaine FROM cine.seances se1
         JOIN cine.seances se2 ON se2.film_id = se1.film_id
         WHERE se1.id = i_seance_id
           AND se2.date_heure > se1.date_heure;
@@ -130,21 +128,21 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     -- Procédure d'archivage privée de séances pour un mois donnée (MEMBRE 2)
     PROCEDURE archiver_mois_prc(
-        p_annee IN NUMBER,
-        p_mois  IN NUMBER
+        i_annee IN NUMBER,
+        n_mois  IN NUMBER
     ) IS
     BEGIN
         UPDATE cine.seances
         SET statut = 'ARCHIVÉE'
-        WHERE EXTRACT(YEAR FROM date_heure) = p_annee
-          AND EXTRACT(MONTH FROM date_heure) = p_mois;
+        WHERE EXTRACT(YEAR FROM date_heure) = i_annee
+          AND EXTRACT(MONTH FROM date_heure) = n_mois;
 
         COMMIT;
     END archiver_mois_prc;
 
     --fonction d'archivage de séances pour une année donnée (MEMBRE 2)
     FUNCTION archiver_seances_annee_fct(
-        p_annee IN NUMBER DEFAULT g_annee_courante
+        i_annee IN NUMBER DEFAULT g_annee_courante
     ) RETURN NUMBER IS
 
         CURSOR c_mois_eligibles(cp_annee IN NUMBER) IS
@@ -163,8 +161,8 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         v_nb_mois NUMBER := 0;
 
     BEGIN
-        FOR rec IN c_mois_eligibles(p_annee) LOOP
-            archiver_mois_prc(p_annee, rec.mois);
+        FOR rec IN c_mois_eligibles(i_annee) LOOP
+            archiver_mois_prc(i_annee, rec.mois);
             v_nb_mois := v_nb_mois + 1;
         END LOOP;
 

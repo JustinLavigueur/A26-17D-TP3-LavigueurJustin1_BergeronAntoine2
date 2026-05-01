@@ -19,12 +19,17 @@ SET SERVEROUTPUT ON;
 -- ============================================================================
 -- Trouvez d'abord l'ID d'une séance ayant encore des places libres
 
+--==============================================================================
+--******************************************************************************
+--TEST RÉUSSI
+--******************************************************************************
+--==============================================================================
 DECLARE
     b_dispo       BOOLEAN;
     d_prochaine   DATE;
 BEGIN
     b_dispo := cine.gestion_cinema_pkg.verifier_disponibilite_fct(
-        i_seance_id      => 1,
+        i_seance_id      => 2,
         i_nb_sieges      => 2,
         o_date_prochaine => d_prochaine
     );
@@ -53,7 +58,7 @@ DECLARE
     d_prochaine DATE;
 BEGIN
     b_dispo := cine.gestion_cinema_pkg.verifier_disponibilite_fct(
-        i_seance_id      => [ID_SEANCE_COMPLETE],
+        i_seance_id      => 23,
         i_nb_sieges      => 1,
         o_date_prochaine => d_prochaine
     );
@@ -149,11 +154,17 @@ END;
 -- Attendu : tables seances_archive_AAAAMM créées, retour = nb mois archivés
 -- ============================================================================
 
+--=============================================================================
+--******************************************************************************
+--TEST RÉUSSI
+--******************************************************************************
+--=============================================================================
+
 DECLARE
     n_mois NUMBER;
 BEGIN
     n_mois := cine.gestion_cinema_pkg.archiver_seances_annee_fct(
-        i_annee => '[ANNEE]'
+        i_annee => '2026'
     );
     DBMS_OUTPUT.PUT_LINE('TEST 5 — Mois archivés : ' || n_mois);
     IF n_mois > 0 THEN
