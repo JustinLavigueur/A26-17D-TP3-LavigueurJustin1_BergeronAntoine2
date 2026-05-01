@@ -18,6 +18,38 @@ SET SERVEROUTPUT ON;
 -- ============================================================================
 
 CREATE OR REPLACE TRIGGER cine.reservations_capacite_trg
+BEFORE INSERT OR UPDATE OF nb_sieges ON cine.reservations
+FOR EACH ROW
+DECLARE
+    v_capacite_salle NUMBER;
+    v_sieges_deja_reserves NUMBER;
+    v_places_disponibles NUMBER;
+BEGIN
+    SELECT s.nb_sieges
+    INTO v_capacite_salle
+    FROM cine.seances se
+    JOIN cine.salles s ON s.id = se.salle_id
+    WHERE se.id = :NEW.seance_id;
+
+    SELECT NVL(SUM(r.nb_sieges), 0)
+    INTO v_sieges_deja_reserves
+    FROM cine.reservations r
+    WHERE r.seance_id = :NEW.seance_id
+      AND r.statut <> 'ANNULÉE'
+      AND r.id <> NVL(:NEW.id, -1);
+
+    v_places_disponibles := v_capacite_salle - v_sieges_deja_reserves;
+
+    IF :NEW.nb_sieges > v_places_disponibles THEN
+        RAISE_APPLICATION_ERROR(-20002,'Capacité de la salle dépassée.');
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20001,'Séance introuvable.');
+
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20003,'Erreur dans reservations_capacite_trg : ' || SQLERRM);
 END reservations_capacite_trg;
 /
 

@@ -209,13 +209,7 @@ END;
 BEGIN
     -- Tentative d'insertion dépassant la capacité :
     INSERT INTO cine.reservations (seance_id, client_id, date_reservation, nb_sieges, statut)
-    VALUES (
-        [ID_SEANCE_PRESQUE_PLEINE],
-        [ID_CLIENT_VALIDE],
-        SYSDATE,
-        [NB_SIEGES_SUPERIEUR_RESTANTS],
-        'CONFIRMÉE'
-    );
+    VALUES (1, 1, SYSDATE, 9999, 'CONFIRMÉE');
     DBMS_OUTPUT.PUT_LINE('TEST 7 ÉCHOUÉ : Le trigger n''a pas bloqué l''insertion.');
     ROLLBACK;
 EXCEPTION
