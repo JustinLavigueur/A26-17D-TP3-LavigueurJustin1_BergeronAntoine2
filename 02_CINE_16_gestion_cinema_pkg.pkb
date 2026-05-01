@@ -113,7 +113,6 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             FROM cine.salles s
             LEFT JOIN cine.seances se ON se.salle_id = s.id
             LEFT JOIN cine.reservations r ON r.seance_id = se.id
-            WHERE EXTRACT(YEAR FROM se.date_heure) = i_annee
             GROUP BY s.id;
     BEGIN
 
