@@ -206,6 +206,12 @@ END;
 -- Trouvez une séance presque pleine (1 siège libre), l'ID d'un client valide,
 -- et un nombre de sieges à reserver plus grand que le restant.
 
+---============================================================================
+--******************************************************************************
+--TEST RÉUSSI
+--******************************************************************************
+--============================================================================
+
 BEGIN
     -- Tentative d'insertion dépassant la capacité :
     INSERT INTO cine.reservations (seance_id, client_id, date_reservation, nb_sieges, statut)
@@ -229,9 +235,14 @@ END;
 -- Attendu : ORA-20001 empêche la suppression
 -- ============================================================================
 -- Trouvez un client ayant une réservation CONFIRMÉE dans le futur :
+--=============================================================================
+--******************************************************************************
+--TEST RÉUSSI
+--******************************************************************************
+--=============================================================================
 
 BEGIN
-    DELETE FROM cine.clients WHERE id = [ID_CLIENT_AVEC_RESERVATION_FUTURE];
+    DELETE FROM cine.clients WHERE id = 77;
     DBMS_OUTPUT.PUT_LINE('TEST 8A ÉCHOUÉ : Le trigger n''a pas bloqué la suppression.');
     ROLLBACK;
 EXCEPTION
@@ -251,14 +262,19 @@ END;
 -- Attendu : client supprimé, ses réservations aussi
 -- ============================================================================
 -- Trouvez un client n'ayant AUCUNE réservation future CONFIRMÉE
+--=============================================================================
+--******************************************************************************
+--TEST RÉUSSI
+--******************************************************************************
+--=============================================================================
 
 DECLARE
     n_reservations NUMBER;
 BEGIN
     SELECT COUNT(1) INTO n_reservations
-    FROM cine.reservations WHERE client_id = [ID_CLIENT_SANS_RESERVATION_FUTURE];
+    FROM cine.reservations WHERE client_id = 677;
 
-    DELETE FROM cine.clients WHERE id = [ID_CLIENT_SANS_RESERVATION_FUTURE];
+    DELETE FROM cine.clients WHERE id = 677;
 
     DBMS_OUTPUT.PUT_LINE('TEST 8B — Client supprimé. Réservations en cascade : ' || n_reservations);
     DBMS_OUTPUT.PUT_LINE('TEST 8B RÉUSSI.');

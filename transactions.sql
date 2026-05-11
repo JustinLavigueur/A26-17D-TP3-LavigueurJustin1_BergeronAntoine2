@@ -92,14 +92,14 @@ BEGIN
     --           et dont la date_reservation est dans les 30 derniers jours,
     --           calculer des frais d'annulation les enregistrer dans une table dans la BD
 
-UPDATE cine.reservations
-    SET frais_annulation = ROUND(montant_calcule * 0.20, 2)
-    WHERE statut = 'ANNULÉE'
-      AND date_reservation >= SYSDATE - 30
-      AND (frais_annulation IS NULL OR frais_annulation = 0);
+    UPDATE cine.reservations
+      SET frais_annulation = ROUND(montant_calcule * 0.20, 2)
+      WHERE statut = 'ANNULÉE'
+        AND date_reservation >= SYSDATE - 30
+        AND (frais_annulation IS NULL OR frais_annulation = 0);
 
-    v_nb_lignes := SQL%ROWCOUNT;
-    DBMS_OUTPUT.PUT_LINE('Étape 4 : ' || v_nb_lignes || ' réservations avec frais calculés.');
+      v_nb_lignes := SQL%ROWCOUNT;
+      DBMS_OUTPUT.PUT_LINE('Étape 4 : ' || v_nb_lignes || ' réservations avec frais calculés.');
 
     -- Étape 5 : Vérifier si un FRAIS_ANNULATION dépasse 50,00 $.
     --           Si OUI :
@@ -133,11 +133,9 @@ UPDATE cine.reservations
         COMMIT;
     DBMS_OUTPUT.PUT_LINE('Étape 6 : COMMIT effectué. Campagne terminée avec succès.');
 
-EXCEPTION
+  EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK TO debut_campagne;
         DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
-
-
 END;
 /
