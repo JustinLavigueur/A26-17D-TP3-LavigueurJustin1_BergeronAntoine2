@@ -62,9 +62,8 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
         o_date_prochaine OUT DATE
-    ) RETURN BOOLEAN AS
-
-        v_places_disponibles NUMBER;
+    ) RETURN BOOLEAN 
+    AS v_places_disponibles NUMBER;
 
     BEGIN
         SELECT s.nb_sieges - NVL(SUM(r.nb_sieges), 0)
@@ -106,8 +105,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         o_nb_salles_traitees OUT NUMBER
     ) IS
         CURSOR c_occupation IS
-            SELECT s.id AS salle_id,
-                COUNT(r.id) AS nb_reservations
+            SELECT s.id AS salle_id, COUNT(r.id) AS nb_reservations
             FROM cine.salles s
             LEFT JOIN cine.seances se ON se.salle_id = s.id
             LEFT JOIN cine.reservations r ON r.seance_id = se.id
@@ -173,8 +171,6 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         Dbms_output.PUT_LINE('Erreur lors de l''archivage : ' || SQLERRM);
 
     END archiver_seances_annee_fct;
-
-
 
 END gestion_cinema_pkg;
 /

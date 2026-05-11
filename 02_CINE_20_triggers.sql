@@ -7,7 +7,7 @@
 SET SERVEROUTPUT ON;
 
 -- ============================================================================
--- DÉCLENCHEUR : reservations_capacite_trg
+-- DÉCLENCHEUR : reservations_capacite_trg (MEMBRE 1)
 -- ============================================================================
 -- BUT : Vérifier que le nombre de sièges demandés ne dépasse pas la capacité
 --       disponible de la salle avant toute insertion ou mise à jour de nb_sieges
