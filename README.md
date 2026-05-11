@@ -29,8 +29,8 @@ Le projet repose sur le schéma CINE et permet de gérer les réservations, les 
 ---
 
 ## ÉQUIPE
-Étudiant 1 : Justin Lavigueur
-Étudiant 2 : Antoine Bergeron
+Étudiant 1 : Justin Lavigueur (1)
+Étudiant 2 : Antoine Bergeron (2)S
 
 ---
 
@@ -125,6 +125,6 @@ cd A26-17D-TP3-LavigueurJustin1_BergeronAntoine2
 - On teste les rôles (caissier01 et client01)  
 
 ### 5. Remise
-- Créer une archive .zip du projet (sans le dossier .git)  
+- On doit créer une archive .zip du projet (sans le dossier .git)  
 - Nom du fichier : H26-17D-TP3-LavigueurJustin1_BergeronAntoine2.zip  
-- Déposer le fichier sur LÉA  
+- On doit déposer le fichier sur LÉA  
