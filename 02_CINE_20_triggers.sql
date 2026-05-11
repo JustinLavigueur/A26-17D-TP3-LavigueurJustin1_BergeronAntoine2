@@ -57,11 +57,32 @@ END reservations_capacite_trg;
 -- ============================================================================
 -- DÉCLENCHEUR : clients_delete_trg
 -- ============================================================================
--- BUT : Contrôler la suppression d'un client. Si le client a des réservations 
---       futures, nous ne pouvons pas le supprimer. Attention : si il a des 
+-- BUT : Contrôler la suppression d'un client. Si le client a des réservations
+--       futures, nous ne pouvons pas le supprimer. Attention : si il a des
 --       reservations, l'exception doit faire planter le système.
 -- ============================================================================
 
 CREATE OR REPLACE TRIGGER cine.clients_delete_trg
+BEFORE DELETE ON cine.clients
+FOR EACH ROW
+DECLARE
+    v_nb_reservations NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_nb_reservations
+    FROM cine.reservations r
+    JOIN cine.seances s ON r.seance_id = s.id
+    WHERE r.client_id = :OLD.id
+      AND s.date_heure > SYSDATE
+      AND r.statut != 'ANNULÉE';
+
+    IF v_nb_reservations > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Impossible de supprimer le client ' || :OLD.id || ' : il possède ' || v_nb_reservations || ' réservation(s) future(s).');
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
 END clients_delete_trg;
 /
+
