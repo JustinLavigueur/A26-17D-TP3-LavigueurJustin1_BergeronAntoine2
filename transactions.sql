@@ -6,8 +6,9 @@
 SET SERVEROUTPUT ON;
 
 DECLARE
-    v_nb_lignes NUMBER;
+v_nb_lignes NUMBER;
     v_nb_montants_bas NUMBER;
+    v_max_frais NUMBER;
 
 BEGIN
 
@@ -81,29 +82,62 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('Réduction de 10% conservée');
     END IF;
 
+    -- ==========================================================================
+    -- ÉTUDIANT B — Étapes 4 à 5 : Campagne de frais d'annulation
+    -- ==========================================================================
+
+
+
+    -- Étape 4 : Pour toutes les réservations dont le statut est ANNULÉE
+    --           et dont la date_reservation est dans les 30 derniers jours,
+    --           calculer des frais d'annulation les enregistrer dans une table dans la BD
+
+UPDATE cine.reservations
+    SET frais_annulation = ROUND(montant_calcule * 0.20, 2)
+    WHERE statut = 'ANNULÉE'
+      AND date_reservation >= SYSDATE - 30
+      AND (frais_annulation IS NULL OR frais_annulation = 0);
+
+    v_nb_lignes := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('Étape 4 : ' || v_nb_lignes || ' réservations avec frais calculés.');
+
+    -- Étape 5 : Vérifier si un FRAIS_ANNULATION dépasse 50,00 $.
+    --           Si OUI :
+    --             - annuler les frais % calculés et plafonner FRAIS_ANNULATION
+    --               à 50,00 $ pour toutes les réservations
+    --           Si NON :
+    --             - message de confirmation que les frais calculés sont conservés
+
+    SELECT MAX(frais_annulation)
+    INTO v_max_frais
+    FROM cine.reservations
+    WHERE statut = 'ANNULÉE'
+      AND date_reservation >= SYSDATE - 30
+      AND frais_annulation IS NOT NULL;
+
+    IF v_max_frais > 50 THEN
+        UPDATE cine.reservations
+        SET frais_annulation = 50.00
+        WHERE statut = 'ANNULÉE'
+          AND date_reservation >= SYSDATE - 30
+          AND frais_annulation > 50;
+
+        DBMS_OUTPUT.PUT_LINE('AVERTISSEMENT : Frais plafonnés à 50,00 $.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Étape 5 : Frais conservés, aucun ne dépasse 50,00 $.');
+    END IF;
+    -- Étape 6 : Si tout s'est déroulé sans erreur :
+    --             - COMMIT, message de confirmation
+    --           Si EXCEPTION :
+    --             - Retourner au début et afficher un message d'erreur.
+        COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Étape 6 : COMMIT effectué. Campagne terminée avec succès.');
+
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK TO debut_campagne;
         DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
 
-    -- ==========================================================================
-    -- ÉTUDIANT B — Étapes 4 à 5 : Campagne de frais d'annulation
-    -- ==========================================================================
-
-    -- Étape 4 : Pour toutes les réservations dont le statut est ANNULÉE
-    --           et dont la date_reservation est dans les 30 derniers jours,
-    --           calculer des frais d'annulation les enregistrer dans une table dans la BD
-    -- Étape 5 : Vérifier si un FRAIS_ANNULATION dépasse 50,00 $.
-    --           Si OUI :
-    --             - annuler les frais % calculés et plafonner FRAIS_ANNULATION 
-    --               à 50,00 $ pour toutes les réservations
-    --           Si NON :
-    --             - message de confirmation que les frais calculés sont conservés
-
-    -- Étape 6 : Si tout s'est déroulé sans erreur :
-    --             - COMMIT, message de confirmation
-    --           Si EXCEPTION :
-    --             - Retourner au début et afficher un message d'erreur.
 
 END;
 /
