@@ -68,8 +68,6 @@ BEGIN
     -- Attribution du rôle système à CINE
     --------------------------------------------------------
     EXECUTE IMMEDIATE 'GRANT ROLE_SYSTEME TO CINE';
-    EXECUTE IMMEDIATE 'GRANT ROLE_CAISSIER TO CAISSIER01';
-    EXECUTE IMMEDIATE 'GRANT ROLE_CLIENT TO CLIENT01';
 
 END;
 /
