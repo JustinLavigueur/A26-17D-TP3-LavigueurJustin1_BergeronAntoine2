@@ -154,7 +154,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
                 FROM cine.seances se2
                 JOIN cine.reservations r ON r.seance_id = se2.id
                 WHERE EXTRACT(YEAR FROM se2.date_heure) = i_annee
-                AND EXTRACT(MONTH FROM se2.date_heure) = EXTRACT(MONTH FROM se.date_heure)
+                AND EXTRACT(MONTH FROM se2.date_heure) = EXTRACT(MONTH FROM s.date_heure)
                 AND r.statut = 'EN_ATTENTE'
               )
             ORDER BY mois;
@@ -162,18 +162,18 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         v_nb_mois NUMBER := 0;
 
     BEGIN
-        v_nb_mois_archives := 0;
 
-        FOR rec IN c_mois LOOP
+        FOR rec IN c_mois_eligibles(i_annee) LOOP
             archiver_mois_prc(i_annee, rec.mois);
-            v_nb_mois_archives := v_nb_mois_archives + 1;
+            v_nb_mois := v_nb_mois + 1;
         END LOOP;
 
-        RETURN v_nb_mois_archives;
+        RETURN v_nb_mois;
 
     EXCEPTION
         WHEN OTHERS THEN
-        Dbms_output.PUT_LINE('Erreur lors de l''archivage : ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('Erreur lors de l''archivage : ' || SQLERRM);
+            RETURN 0;
 
     END archiver_seances_annee_fct;
 
