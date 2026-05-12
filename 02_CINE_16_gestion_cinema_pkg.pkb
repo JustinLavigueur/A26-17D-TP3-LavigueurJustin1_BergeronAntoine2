@@ -109,6 +109,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             FROM cine.salles s
             LEFT JOIN cine.seances se ON se.salle_id = s.id
             LEFT JOIN cine.reservations r ON r.seance_id = se.id
+            WHERE EXTRACT(YEAR FROM se.date_heure) = i_annee
             GROUP BY s.id;
     BEGIN
 
@@ -149,22 +150,26 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             WHERE EXTRACT(YEAR FROM date_heure) = cp_annee
               AND statut != 'ARCHIVÉE'
               AND NOT EXISTS (
-                  SELECT 1
-                  FROM cine.reservations r
-                  WHERE r.seance_id = s.id
-                    AND r.statut = 'EN_ATTENTE'
+                SELECT 1
+                FROM cine.seances se2
+                JOIN cine.reservations r ON r.seance_id = se2.id
+                WHERE EXTRACT(YEAR FROM se2.date_heure) = i_annee
+                AND EXTRACT(MONTH FROM se2.date_heure) = EXTRACT(MONTH FROM se.date_heure)
+                AND r.statut = 'EN_ATTENTE'
               )
             ORDER BY mois;
 
         v_nb_mois NUMBER := 0;
 
     BEGIN
-        FOR rec IN c_mois_eligibles(i_annee) LOOP
+        v_nb_mois_archives := 0;
+
+        FOR rec IN c_mois LOOP
             archiver_mois_prc(i_annee, rec.mois);
-            v_nb_mois := v_nb_mois + 1;
+            v_nb_mois_archives := v_nb_mois_archives + 1;
         END LOOP;
 
-        RETURN v_nb_mois;
+        RETURN v_nb_mois_archives;
 
     EXCEPTION
         WHEN OTHERS THEN
