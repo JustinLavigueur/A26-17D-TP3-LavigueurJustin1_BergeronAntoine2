@@ -5,6 +5,7 @@
 
 -- Suppression des déclencheurs (Triggers)
 DROP TRIGGER cine.reservations_capacite_trg;
+DROP TRIGGER cine.clients_delete_trg;
 
 -- Suppression du package cine.GESTION_CINEMA_PKG et son body aussi 
 DROP PACKAGE BODY cine.gestion_cinema_pkg;
