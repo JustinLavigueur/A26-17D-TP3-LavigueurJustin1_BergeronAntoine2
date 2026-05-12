@@ -30,7 +30,7 @@ Le projet repose sur le schéma CINE et permet de gérer les réservations, les 
 
 ## ÉQUIPE
 Étudiant 1 : Justin Lavigueur (1)
-Étudiant 2 : Antoine Bergeron (2)S
+Étudiant 2 : Antoine Bergeron (2)
 
 ---
 
@@ -101,10 +101,14 @@ Des tests ont été réalisés pour valider :
 ## INSTRUCTIONS
 
 ### 1. Cloner le dépôt
+```bash
 git clone https://github.com/JustinLavigueur/A26-17D-TP3-LavigueurJustin1_BergeronAntoine2.git
+```
 
 ### 2. Se placer dans le dossier du projet
+```bash
 cd A26-17D-TP3-LavigueurJustin1_BergeronAntoine2
+```
 
 ### 3. Exécuter les scripts dans l’ordre
 
