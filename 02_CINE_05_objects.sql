@@ -225,7 +225,7 @@ create table cine.reservations (
    statut           varchar2(20)  not null, --4) e
    sieges_occupes   varchar2(255) not null,
    prix_ticket      number(10,2) not null,
-    FRAIS_ANNULATION NUMBER(8,2) DEFAULT 0
+   frais_annulation NUMBER(8,2) DEFAULT 0
 );comment on table cine.reservations is
    'Table des réservations de cinéma avec les détails de la réservation.';
 comment on column cine.reservations.sieges_occupes is
@@ -244,6 +244,8 @@ comment on column cine.reservations.seance_id is
    'Identifiant de la séance pour laquelle la réservation a été faite.';
 comment on column cine.reservations.id is
    'Identifiant unique de la réservation.';
+comment on column cine.reservations.frais_annulation is
+   'Cette colonne stockera les frais appliqués lors d<une annulation tardive (moins de 24 h avant la séance).';
 
 --PRIMARY KEY
 alter table cine.reservations add constraint reservations_pk primary key ( id );
