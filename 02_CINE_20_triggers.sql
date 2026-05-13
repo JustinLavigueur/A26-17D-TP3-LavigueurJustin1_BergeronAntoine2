@@ -22,6 +22,7 @@ BEFORE INSERT OR UPDATE OF nb_sieges ON cine.reservations
 FOR EACH ROW
 DECLARE
     v_nb_sieges_salle cine.salles.nb_sieges%TYPE;
+    v_nb_sieges_reserves NUMBER;
 BEGIN
     SELECT s.nb_sieges
     INTO v_nb_sieges_salle
@@ -29,7 +30,14 @@ BEGIN
     JOIN cine.salles s ON s.id = se.salle_id
     WHERE se.id = :NEW.seance_id;
 
-    IF :NEW.nb_sieges > v_nb_sieges_salle THEN
+    SELECT NVL(SUM(r.nb_sieges), 0)
+    INTO v_nb_sieges_reserves
+    FROM cine.reservations r
+    WHERE r.seance_id = :NEW.seance_id
+      AND r.statut <> 'ANNULÉE';
+
+
+    IF :NEW.nb_sieges + v_nb_sieges_reserves > v_nb_sieges_salle THEN
         RAISE_APPLICATION_ERROR(-20010, 'Nombre de sièges demandé supérieur à la capacité de la salle.');
     END IF;
 

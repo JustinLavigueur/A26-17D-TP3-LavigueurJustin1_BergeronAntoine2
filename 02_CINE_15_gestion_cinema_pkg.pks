@@ -23,6 +23,7 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
     -- Procédures
     --------------------------------------------------------
 
+
     -- La procédure annuler_reservation_prc permet d'annuler une réservation existante
     -- ***(MEMBRE 2)***
     PROCEDURE annuler_reservation_prc(
@@ -30,12 +31,14 @@ CREATE OR REPLACE PACKAGE cine.GESTION_CINEMA_PKG AS
     );
 
     -- La procédure generer_rapport_occupation_prc permet de générer
-    -- via DBMS_OUTPUT un rapport d'occupation par salle pour une année
-    -- donnée ***(MEMBRE 1)***
+    -- via DBMS_OUTPUT un rapport d'occupation par salle pour une année donnée
+    -- ***(MEMBRE 1)***
     PROCEDURE generer_rapport_occupation_prc(
         i_annee IN NUMBER DEFAULT g_annee_courante,
         o_nb_salles_traitees OUT NUMBER
     );
+
+
 
 
     --------------------------------------------------------

@@ -6,10 +6,9 @@
 SET SERVEROUTPUT ON;
 
 DECLARE
-v_nb_lignes NUMBER;
+    v_nb_lignes NUMBER;
     v_nb_montants_bas NUMBER;
     v_max_frais NUMBER;
-
 BEGIN
 
     SAVEPOINT debut_campagne;
@@ -17,6 +16,7 @@ BEGIN
     -- ==========================================================================
     -- ÉTUDIANT A — Étapes 1 à 3 : Campagne tarifaire
     -- ==========================================================================
+
 
     -- Étape 1 : Faire une mise à jour afin que la colonne PRIX_TICKET soit à 12.99
     --           pour toutes les réservatins CONFIRMÉES.
@@ -82,10 +82,14 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('Étape 3 : Réduction de 10% conservée');
     END IF;
 
-    -- ==========================================================================
-    -- ÉTUDIANT B — Étapes 4 à 5 : Campagne de frais d'annulation
-    -- ==========================================================================
 
+
+
+
+
+    -- ==========================================================================
+    -- ÉTUDIANT B — Étapes 4 à 6 : Campagne de frais d'annulation
+    -- ==========================================================================
 
 
     -- Étape 4 : Pour toutes les réservations dont le statut est ANNULÉE
@@ -126,6 +130,7 @@ BEGIN
     ELSE
         DBMS_OUTPUT.PUT_LINE('Étape 5 : Frais conservés, aucun ne dépasse 50,00 $.');
     END IF;
+
     -- Étape 6 : Si tout s'est déroulé sans erreur :
     --             - COMMIT, message de confirmation
     --           Si EXCEPTION :

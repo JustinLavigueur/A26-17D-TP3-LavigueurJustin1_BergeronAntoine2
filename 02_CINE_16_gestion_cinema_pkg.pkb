@@ -1,7 +1,9 @@
---Procédure d'annulation de réservation
 CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
-    -- Procédure d'annulation de réservation (MEMBRE 2)
+    --------------------------------------------------------
+    -- SECTION 1 : PROCÉDURE D'ANNULATION DE RÉSERVATION (MEMBRE 2)
+    --------------------------------------------------------
+
     PROCEDURE annuler_reservation_prc(
         i_reservation_id IN cine.reservations.id%TYPE
     ) IS
@@ -54,7 +56,12 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
     END annuler_reservation_prc;
 
 
-    -- Fonction qui vérifie si une séance a assez de places disponibles (MEMBRE 1)
+
+    --------------------------------------------------------
+    -- SECTION 2 : FONCTION DE VÉRIFICATION DE DISPONIBILITÉ (MEMBRE 1)
+    --------------------------------------------------------
+
+    -- Fonction qui vérifie si une séance a assez de places disponibles 
     FUNCTION verifier_disponibilite_fct(
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
@@ -100,7 +107,13 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
     END verifier_disponibilite_fct;
 
 
-    -- Procédure generer_rapport_occupation_prc (MEMBRE 1)
+
+
+    --------------------------------------------------------
+    -- SECTION 3 : PROCÉDURE DE RAPPORT D'OCCUPATION (MEMBRE 1)
+    --------------------------------------------------------
+
+    -- Procédure generer_rapport_occupation_prc 
     PROCEDURE generer_rapport_occupation_prc(
         i_annee IN NUMBER DEFAULT g_annee_courante,
         o_nb_salles_traitees OUT NUMBER
@@ -126,6 +139,12 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
             DBMS_OUTPUT.PUT_LINE('Erreur lors de la génération du rapport d''occupation : ' || SQLERRM);
     END generer_rapport_occupation_prc;
 
+
+
+    --------------------------------------------------------
+    -- SECTION 4 : PROCÉDURE PRIVÉE D'ARCHIVAGE
+    --------------------------------------------------------
+
     -- Procédure d'archivage privée de séances pour un mois donnée (MEMBRE 2)
     PROCEDURE archiver_mois_prc(
         i_annee IN NUMBER,
@@ -140,6 +159,12 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         COMMIT;
     END archiver_mois_prc;
 
+
+
+    --------------------------------------------------------
+    -- SECTION 5 : FONCTION D'ARCHIVAGE DES SÉANCES
+    --------------------------------------------------------
+    
     --fonction d'archivage de séances pour une année donnée (MEMBRE 2)
     FUNCTION archiver_seances_annee_fct(
         i_annee IN NUMBER DEFAULT g_annee_courante
