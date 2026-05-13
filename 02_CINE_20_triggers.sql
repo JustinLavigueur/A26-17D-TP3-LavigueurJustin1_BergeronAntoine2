@@ -71,7 +71,7 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE;
+        RAISE_APPLICATION_ERROR(-20002, 'Erreur dans clients_delete_trg : ' || SQLERRM);
 END clients_delete_trg;
 /
 

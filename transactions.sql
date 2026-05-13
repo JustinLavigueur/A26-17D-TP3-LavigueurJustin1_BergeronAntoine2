@@ -60,7 +60,7 @@ BEGIN
 
         ROLLBACK TO debut_campagne;
 
-        DBMS_OUTPUT.PUT_LINE('Montant < 5 détecté → annulation réduction 10%');
+        DBMS_OUTPUT.PUT_LINE('Montant < 5 détecté : annulation réduction 10%');
 
         -- reset
         UPDATE cine.reservations
@@ -130,7 +130,7 @@ BEGIN
     --             - COMMIT, message de confirmation
     --           Si EXCEPTION :
     --             - Retourner au début et afficher un message d'erreur.
-        COMMIT;
+    COMMIT;
     DBMS_OUTPUT.PUT_LINE('Étape 6 : COMMIT effectué. Campagne terminée avec succès.');
 
   EXCEPTION

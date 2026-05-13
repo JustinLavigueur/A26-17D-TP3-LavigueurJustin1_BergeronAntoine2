@@ -30,13 +30,10 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
         IF v_heures_restantes < 24 THEN
             v_frais := ROUND(v_nb_sieges * v_prix_ticket * 0.2, 2);
-
             UPDATE cine.reservations
             SET statut           = 'ANNULÉE',
                 frais_annulation = v_frais
             WHERE id = i_reservation_id;
-
-
             RAISE e_annulation_tardive;
         END IF;
 
@@ -47,13 +44,13 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     EXCEPTION
         WHEN e_client_inexistant THEN
-            Dbms_output.PUT_LINE('Client inexistant : ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('Client inexistant : ' || SQLERRM);
 
         WHEN e_annulation_tardive THEN
-            Dbms_output.PUT_LINE('Annulation tardive. La séance est dans 24h ou moins (Des frais d''annulation de 20% s''appliquent) : ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('Annulation tardive. La séance est dans 24h ou moins (Des frais d''annulation de 20% s''appliquent) : ' || SQLERRM);
 
         WHEN OTHERS THEN
-           Dbms_output.PUT_LINE('Erreur lors de l''annulation : ' || SQLERRM);
+           DBMS_OUTPUT.PUT_LINE('Erreur lors de l''annulation : ' || SQLERRM);
     END annuler_reservation_prc;
 
 
@@ -62,7 +59,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         i_seance_id IN NUMBER,
         i_nb_sieges IN NUMBER,
         o_date_prochaine OUT DATE
-    ) RETURN BOOLEAN 
+    ) RETURN BOOLEAN
     AS v_places_disponibles NUMBER;
 
     BEGIN
@@ -88,12 +85,16 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     EXCEPTION
         WHEN e_seance_complete THEN
-            RAISE;
+            DBMS_OUTPUT.PUT_LINE('La séance est complète. Il ne reste pas assez de places disponibles.');
 
         WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Séance non trouvée ou pas de séance suivante disponible.');
+            o_date_prochaine := NULL;
             RETURN FALSE;
 
         WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erreur lors de la vérification de la disponibilité : ' || SQLERRM);
+            o_date_prochaine := NULL;
             RETURN FALSE;
 
     END verifier_disponibilite_fct;
@@ -122,7 +123,7 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
 
     EXCEPTION
         WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('Erreur dans le rapport');
+            DBMS_OUTPUT.PUT_LINE('Erreur lors de la génération du rapport d''occupation : ' || SQLERRM);
     END generer_rapport_occupation_prc;
 
     -- Procédure d'archivage privée de séances pour un mois donnée (MEMBRE 2)
@@ -162,7 +163,6 @@ CREATE OR REPLACE PACKAGE BODY cine.GESTION_CINEMA_PKG AS
         v_nb_mois NUMBER := 0;
 
     BEGIN
-
         FOR rec IN c_mois_eligibles(i_annee) LOOP
             archiver_mois_prc(i_annee, rec.mois);
             v_nb_mois := v_nb_mois + 1;

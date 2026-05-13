@@ -68,7 +68,5 @@ BEGIN
     -- Attribution du rôle système à CINE
     --------------------------------------------------------
     EXECUTE IMMEDIATE 'GRANT ROLE_SYSTEME TO CINE';
-    EXECUTE IMMEDIATE 'GRANT SYSDBA TO CINE';
-
 END;
 /
