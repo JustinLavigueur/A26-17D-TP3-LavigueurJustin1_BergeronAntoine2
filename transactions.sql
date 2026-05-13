@@ -76,10 +76,10 @@ BEGIN
             WHERE programme_fidelite = 'GOLD'
           );
 
-        DBMS_OUTPUT.PUT_LINE('Réduction forfaitaire de 0.50$ appliquée');
+        DBMS_OUTPUT.PUT_LINE('Étape 3 : Réduction forfaitaire de 0.50$ appliquée');
 
     ELSE
-        DBMS_OUTPUT.PUT_LINE('Réduction de 10% conservée');
+        DBMS_OUTPUT.PUT_LINE('Étape 3 : Réduction de 10% conservée');
     END IF;
 
     -- ==========================================================================
